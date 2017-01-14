@@ -26,7 +26,7 @@ public class Constants {
     public static final String USERSEC_PREP_SELECTALL_BY_ROLEID_QUERY="SELECT ID,EMAIL from users_sec,usersandroles where users_sec.ID=usersandroles.USER_ID and ROLE_ID=?";
     public static final String USERSEC_PREP_INSERT_QUERY="INSERT INTO users_sec values (?,?,?,?,?,?,?,?,?)";
     public static final String USERSEC_PREP_UPDATE_QUERY="UPDATE users_sec SET EMAIL=?,PASSWORD=?,STATUS=?,NAME=?,LASTNAME=?,SURNAME=?,ADDRESS=?,PHONE=? WHERE ID=?";
-    public static final String USERSEC_PREP_DELETE_QUERY="DELETE FROM users_sec WHERE ID=?";
+    public static final String USERSEC_PREP_DELETE_QUERY="DELETE FROM users_sec WHERE ID=?;DELETE FROM usersandroles WHERE USER_ID=?";
     public static final String ROLE_SELECTALL_QUERY="SELECT * FROM roles";
     public static final String ROLE_PREP_SELECTONE_QUERY="SELECT * FROM roles WHERE ID=?";
     public static final String ROLE_PREP_SELECTONE_BY_NAME_QUERY="SELECT * FROM roles WHERE NAME=?";
@@ -57,4 +57,5 @@ public class Constants {
     public static final String ORDERSTATUS_PREP_INSERT_QUERY="INSERT INTO orderupdates values (?,?)";
     public static final String ORDERSTATUS_PREP_UPDATE_QUERY="UPDATE orderupdates SET STATUS=? WHERE ID=?";
     public static final String ORDERSTATUS_PREP_DELETE_QUERY="DELETE FROM orderupdates WHERE ID=?";
+    public static final String USERSANDROLES_INSERT_QUERY="INSERT INTO usersandroles VALUES (?,?)";
 }

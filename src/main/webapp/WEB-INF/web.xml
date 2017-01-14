@@ -21,44 +21,9 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/spring-context/*.xml</param-value>
     </context-param>
+    
 
-    <!--<filter>
-        <filter-name>AuthorizationFilter</filter-name>
-        <filter-class>grocerystore.filters.AuthorizationFilter</filter-class>
-        <init-param>
-            <param-name>test-param</param-name>
-            <param-value>This parameter is for testing.</param-value>
-        </init-param>
-    </filter>
     <filter>
-        <filter-name>AdminFilter</filter-name>
-        <filter-class>grocerystore.filters.AdminFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>AuthorizationFilter</filter-name>
-        <url-pattern>/GroceryListAdmin</url-pattern>
-        <url-pattern>/GroceryAdd</url-pattern>
-        <url-pattern>/GroceryEdit</url-pattern>
-        <url-pattern>/GroceryDel</url-pattern>
-        <url-pattern>/CartAdd</url-pattern>
-        <url-pattern>/CartList</url-pattern>
-        <url-pattern>/CartRemove</url-pattern>
-        <url-pattern>/OrderAdd</url-pattern>
-        <url-pattern>/OrderList</url-pattern>
-        <url-pattern>/OrderEdit</url-pattern>
-        <url-pattern>/OrderListAdmin</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdminFilter</filter-name>
-        <url-pattern>/GroceryListAdmin</url-pattern>
-        <url-pattern>/GroceryAdd</url-pattern>
-        <url-pattern>/GroceryEdit</url-pattern>
-        <url-pattern>/GroceryDel</url-pattern>
-        <url-pattern>/OrderEdit</url-pattern>
-        <url-pattern>/OrderListAdmin</url-pattern>
-    </filter-mapping>-->
-
-    <!--<filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <init-param>
@@ -73,7 +38,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>-->
+    </filter-mapping>
 
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>

@@ -1,7 +1,9 @@
 package grocerystore.services.concrete;
 
-import grocerystore.domain.abstracts.IRepositoryRole;
-import grocerystore.domain.abstracts.IRepositoryUser;
+import grocerystore.domain.abstracts.IRepositoryRoleSec;
+import grocerystore.domain.abstracts.IRepositoryUserSec;
+import grocerystore.domain.entities.RoleSec;
+import grocerystore.domain.entities.UserSec;
 import grocerystore.domain.exceptions.DAOException;
 import grocerystore.services.abstracts.IAccountService;
 import grocerystore.services.exceptions.AccountServiceException;
@@ -18,10 +20,10 @@ import org.springframework.stereotype.Service;
 public class AccountService implements IAccountService {
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
 
-    private IRepositoryUser userHandler;
-    private IRepositoryRole roleHandler;
+    private IRepositoryUserSec userHandler;
+    private IRepositoryRoleSec roleHandler;
 
-    public AccountService(IRepositoryUser userHandler, IRepositoryRole roleHandler){
+    public AccountService(IRepositoryUserSec userHandler, IRepositoryRoleSec roleHandler){
         this.userHandler=userHandler;
         this.roleHandler=roleHandler;
     }
@@ -32,15 +34,16 @@ public class AccountService implements IAccountService {
      * @return
      */
     @Override
-    public AuthUser logIn(User user) throws AccountServiceException {
-        Role role = null;
+    public AuthUser logIn(UserSec user) throws AccountServiceException {
+        /*RoleSec role = null;
         try {
-            role = roleHandler.getOne(user.getRoleID());
+            role = roleHandler.getOne(user.getRoles().get(0));
         } catch (DAOException e) {
             logger.error("cant logIn",e);
             throw new AccountServiceException("Невозможно осуществить вход в систему!",e);
         }
-        return new AuthUser(user,role);
+        return new AuthUser(user,role);*/
+        return null;
     }
 
     /**
@@ -50,11 +53,11 @@ public class AccountService implements IAccountService {
      * @throws DAOException
      */
     @Override
-    public AuthUser signIn(User user) throws AccountServiceException {
-        Role role = null;
+    public AuthUser signIn(UserSec user) throws AccountServiceException {
+        RoleSec role = null;
         try {
             userHandler.create(user);
-            role = roleHandler.getOne(user.getRoleID());
+            role = roleHandler.getOne(user.getRoles().get(0).getId());
         } catch (DAOException e) {
             logger.error("cant signIn!",e);
             throw new AccountServiceException("Невозможно зарегистрировать пользователя!",e);

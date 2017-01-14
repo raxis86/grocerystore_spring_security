@@ -1,11 +1,14 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Login page</title>
 </head>
-
+<ul id="menu">
+    <li><a href="/Index">Главная</a></li>
+</ul>
 <body>
 <div>
                 <c:url var="loginUrl" value="/login" />
@@ -31,7 +34,7 @@
                     <input type="hidden" name="${_csrf.parameterName}"   value="${_csrf.token}" />
 
                     <div>
-                        <input type="submit" value="Log in">
+                        <input type="submit" value="Войти">
                     </div>
                 </form>
             </div>

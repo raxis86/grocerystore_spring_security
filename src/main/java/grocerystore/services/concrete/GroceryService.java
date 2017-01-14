@@ -16,6 +16,7 @@ import javafx.util.converter.BigDecimalStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,7 @@ public class GroceryService implements IGroceryService {
     }
 
     @Override
+    @Secured("ROLE_ADMIN")
     public void groceryCreate(String name, String price, String quantity) throws GroceryServiceException, FormGroceryException {
         Grocery grocery = new Grocery();
         Message message = new Message();
@@ -115,6 +117,7 @@ public class GroceryService implements IGroceryService {
     }
 
     @Override
+    @Secured("ROLE_ADMIN")
     public void groceryDelete(String groceryid) throws GroceryServiceException {
         Grocery grocery = null;
         List<ListGrocery> listGroceries = null;
@@ -137,6 +140,7 @@ public class GroceryService implements IGroceryService {
     }
 
     @Override
+    @Secured("ROLE_ADMIN")
     public void groceryUpdate(String groceryid, String name, String price, String quantity) throws GroceryServiceException, FormGroceryException {
         Grocery grocery = null;
         Message message = new Message();

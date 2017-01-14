@@ -9,6 +9,7 @@ import grocerystore.services.models.Cart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +29,13 @@ public class CartService implements ICartService {
         this.groceryHandler=groceryHandler;
     }
 
-    /*public CartService(){
-        this.groceryHandler=new GrocerySql();
-    }*/
-
     /**
      * Добавление продукта в корзину по коду продукта
      * @param cart - объект корзина
      * @param groceryid - код продукта
      */
     @Override
+    @Secured("ROLE_USER")
     public void addToCart(Cart cart, String groceryid) throws CartServiceException {
         Grocery grocery = null;
 
@@ -59,6 +57,7 @@ public class CartService implements ICartService {
      * @param groceryid
      */
     @Override
+    @Secured("ROLE_USER")
     public void removeFromCart(Cart cart, String groceryid) throws CartServiceException {
         Grocery grocery = null;
         try {

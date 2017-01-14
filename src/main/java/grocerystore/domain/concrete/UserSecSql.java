@@ -87,7 +87,7 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
             statement.setObject(1,entity.getId().toString());
             statement.setObject(2,entity.getEmail());
             statement.setObject(3,entity.getPassword());
-            statement.setObject(4,entity.getStatus());
+            statement.setObject(4,entity.getStatus().toString());
             statement.setObject(5,entity.getName());
             statement.setObject(6,entity.getLastname());
             statement.setObject(7,entity.getSurname());
@@ -97,6 +97,17 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
         } catch (SQLException e) {
             logger.error("Insert user error!", e);
             throw new UserException("Проблема с базой данных: невозможно создать запись в таблице пользователей!",e);
+        }
+        try(Connection connection = getDs().getConnection();
+            PreparedStatement statement = connection.prepareStatement(USERSANDROLES_INSERT_QUERY);) {
+            for(RoleSec role:entity.getRoles()){
+                statement.setObject(1,entity.getId().toString());
+                statement.setObject(2,role.getId().toString());
+                statement.execute();
+            }
+        } catch (SQLException e) {
+            logger.error("Insert user error!", e);
+            throw new UserException("Проблема с базой данных: невозможно создать запись в таблице usersandroles!",e);
         }
         return true;
     }
@@ -111,6 +122,7 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
             logger.error("Cant delete User!",e);
             throw new UserException("Проблема с базой данных: невозможно удалить запись из таблицы пользователей!",e);
         }
+
         return true;
     }
 
@@ -120,7 +132,7 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
             PreparedStatement statement=connection.prepareStatement(USERSEC_PREP_UPDATE_QUERY);) {
             statement.setObject(1,entity.getEmail());
             statement.setObject(2,entity.getPassword());
-            statement.setObject(3,entity.getStatus());
+            statement.setObject(3,entity.getStatus().toString());
             statement.setObject(4,entity.getName());
             statement.setObject(5,entity.getLastname());
             statement.setObject(6,entity.getSurname());

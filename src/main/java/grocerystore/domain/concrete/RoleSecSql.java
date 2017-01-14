@@ -5,6 +5,7 @@ import grocerystore.domain.entities.RoleSec;
 import grocerystore.domain.exceptions.RoleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import static grocerystore.constants.Constants.*;
 /**
  * Created by raxis on 13.01.2017.
  */
+@Repository
 public class RoleSecSql extends SQLImplementation implements IRepositoryRoleSec {
     private static final Logger logger = LoggerFactory.getLogger(RoleSecSql.class);
 

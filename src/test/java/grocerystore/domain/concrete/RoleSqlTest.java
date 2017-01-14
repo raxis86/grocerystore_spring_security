@@ -1,5 +1,6 @@
 package grocerystore.domain.concrete;
 
+import grocerystore.domain.entities.RoleSec;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +24,10 @@ import static org.junit.Assert.*;
 public class RoleSqlTest {
 
     private EmbeddedDatabase db;
-    private RoleSql roleHandler;
+    private RoleSecSql roleHandler;
     private DataSource ds;
-    private Role role;
-    private List<Role> roleList;
+    private RoleSec role;
+    private List<RoleSec> roleList;
 
     /**
      * Подготавливаем тестовую БД H2 на основе скриптов
@@ -41,11 +42,11 @@ public class RoleSqlTest {
                 .build();
 
         ds = (DataSource)db;
-        roleHandler = new RoleSql();
+        roleHandler = new RoleSecSql();
         roleHandler.setDs(ds);
     }
 
-    private boolean queryAndGroceryEquals(String query, Role role){
+    private boolean queryAndGroceryEquals(String query, RoleSec role){
         boolean flag=false;
 
         try(Connection connection = ds.getConnection();
@@ -53,7 +54,7 @@ public class RoleSqlTest {
             ResultSet resultSet = statement.executeQuery(query);) {
             while (resultSet.next()){
                 if((role.getId().equals(UUID.fromString(resultSet.getString("ID"))))
-                 &&(role.getName().equals(resultSet.getString("NAME")))
+                 &&(role.getRoleName().equals(resultSet.getString("ROLENAME")))
                   ){
                     flag=true;
                 }
@@ -77,10 +78,10 @@ public class RoleSqlTest {
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ROLES");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ROLES_SEC");) {
             while (resultSet.next()){
                 if((roleList.get(i).getId().equals(UUID.fromString(resultSet.getString("ID"))))
-                        &&(roleList.get(i).getName().equals(resultSet.getString("NAME")))
+                        &&(roleList.get(i).getRoleName().equals(resultSet.getString("ROLENAME")))
                         ){
                     flag=true;
                 }
@@ -99,7 +100,7 @@ public class RoleSqlTest {
     @Test
     public void getOne() throws Exception {
         role = roleHandler.getOne(UUID.fromString("81446dc5-bd04-4d41-bd72-7405effb4716"));
-        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES WHERE ID='81446dc5-bd04-4d41-bd72-7405effb4716'",role));
+        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES_SEC WHERE ID='81446dc5-bd04-4d41-bd72-7405effb4716'",role));
     }
 
     /**
@@ -108,14 +109,14 @@ public class RoleSqlTest {
      */
     @Test
     public void create() throws Exception {
-        role = new Role();
+        role = new RoleSec();
 
         role.setId(UUID.fromString("fe8eb585-d1f0-43b3-a9b8-5747f6b933ee"));
-        role.setName("Test");
+        role.setRoleName("Test");
 
         roleHandler.create(role);
 
-        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES WHERE ID='fe8eb585-d1f0-43b3-a9b8-5747f6b933ee'",role));
+        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES_SEC WHERE ID='fe8eb585-d1f0-43b3-a9b8-5747f6b933ee'",role));
     }
 
     /**
@@ -128,13 +129,13 @@ public class RoleSqlTest {
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();) {
-            statement.execute("INSERT INTO ROLES VALUES ('8d098d65-50a8-4ec2-8e35-22219b6c0b00','appTest')");
+            statement.execute("INSERT INTO ROLES_SEC VALUES ('8d098d65-50a8-4ec2-8e35-22219b6c0b00','appTest')");
         } catch (SQLException e) {
         }
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ROLES WHERE ID='8d098d65-50a8-4ec2-8e35-22219b6c0b00'");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ROLES_SEC WHERE ID='8d098d65-50a8-4ec2-8e35-22219b6c0b00'");) {
             if(resultSet.next())i++;
         } catch (SQLException e) {
         }
@@ -144,7 +145,7 @@ public class RoleSqlTest {
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ROLES WHERE ID='8d098d65-50a8-4ec2-8e35-22219b6c0b00'");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ROLES_SEC WHERE ID='8d098d65-50a8-4ec2-8e35-22219b6c0b00'");) {
             if(resultSet.next())i--;
         } catch (SQLException e) {
         }
@@ -158,20 +159,20 @@ public class RoleSqlTest {
      */
     @Test
     public void update() throws Exception {
-        role = new Role();
+        role = new RoleSec();
 
         role.setId(UUID.fromString("81446dc5-bd04-4d41-bd72-7405effb4716"));
-        role.setName("Test+");
+        role.setRoleName("Test+");
 
         roleHandler.update(role);
 
-        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES WHERE ID='81446dc5-bd04-4d41-bd72-7405effb4716'",role));
+        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES_SEC WHERE ID='81446dc5-bd04-4d41-bd72-7405effb4716'",role));
     }
 
     @Test
     public void roleByRoleName() throws Exception {
-        role = roleHandler.roleByRoleName("customer");
-        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES WHERE NAME='customer'",role));
+        role = roleHandler.roleByRoleName("ROLE_USER");
+        assertTrue(queryAndGroceryEquals("SELECT * FROM ROLES_SEC WHERE ROLENAME='ROLE_USER'",role));
     }
 
     @After

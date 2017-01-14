@@ -27,7 +27,7 @@ public class AuthorizationFilter implements Filter{
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpSession session = ((HttpServletRequest)request).getSession(false);
-        User currentUser = null;
+        /*User currentUser = null;
 
         if(session!=null){
             currentUser = (User)session.getAttribute("user");
@@ -40,7 +40,7 @@ public class AuthorizationFilter implements Filter{
         }
         else {
             chain.doFilter(request,response);
-        }
+        }*/
     }
 
     @Override

@@ -11,6 +11,7 @@ import grocerystore.services.models.Cart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,7 @@ public class ListGroceryService implements IListGroceryService {
      * @throws DAOException
      */
     @Override
+    @Secured("ROLE_USER")
     public void createListGrocery(Cart cart, Order order) throws ListGroceryServiceException {
         for(Map.Entry entry : cart.getMap().entrySet()){
             ListGrocery listGrocery = new ListGrocery();

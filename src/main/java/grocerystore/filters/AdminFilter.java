@@ -24,7 +24,7 @@ public class AdminFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpSession session = ((HttpServletRequest)request).getSession(false);
-        Role currentRole = null;
+       /* Role currentRole = null;
         if(session!=null){
             currentRole = (Role)session.getAttribute("role");
         }
@@ -36,7 +36,7 @@ public class AdminFilter implements Filter {
         }
         else {
             chain.doFilter(request,response);
-        }
+        }*/
     }
 
     @Override

@@ -12,6 +12,7 @@ import grocerystore.services.viewmodels.OrderView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +29,13 @@ public class OrderService implements IOrderService {
     private IRepositoryOrderStatus orderStatusHandler;
     private IRepositoryListGrocery listGroceryHandler;
     private IRepositoryGrocery groceryHandler;
-    private IRepositoryUser userHandler;
+    private IRepositoryUserSec userHandler;
 
     public OrderService(IRepositoryOrder orderHandler,
                         IRepositoryOrderStatus orderStatusHandler,
                         IRepositoryListGrocery listGroceryHandler,
                         IRepositoryGrocery groceryHandler,
-                        IRepositoryUser userHandler){
+                        IRepositoryUserSec userHandler){
         this.orderHandler=orderHandler;
         this.orderStatusHandler=orderStatusHandler;
         this.listGroceryHandler=listGroceryHandler;
@@ -43,7 +44,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Order createOrder(User user, Cart cart) throws OrderServiceException {
+    @Secured("ROLE_USER")
+    public Order createOrder(UserSec user, Cart cart) throws OrderServiceException {
         Order order = new Order();
         order.setId(UUID.randomUUID());
         order.setUserid(user.getId());
@@ -85,12 +87,20 @@ public class OrderService implements IOrderService {
             throw new OrderServiceException("Невозможно сформировать список заказов!",e);
         }
 
-        for(Order repoOrder : orderList){
-            try {
-                orderViewList.add(formOrderView(repoOrder.getId(),userHandler.getOne(repoOrder.getUserid()).getEmail()));
-            } catch (DAOException e) {
-                logger.error("cant user.getOne",e);
-                throw new OrderServiceException("Невозможно сформировать список заказов!",e);
+        if(orderList!=null){
+            for(Order repoOrder : orderList){
+                try {
+                    UUID userid = repoOrder.getUserid();
+                    if(userid!=null){
+                        UserSec user = userHandler.getOne(userid);
+                        if(user!=null){
+                            orderViewList.add(formOrderView(repoOrder.getId(),user.getEmail()));
+                        }
+                    }
+                } catch (DAOException e) {
+                    logger.error("cant user.getOne",e);
+                    throw new OrderServiceException("Невозможно сформировать список заказов!",e);
+                }
             }
         }
 
@@ -98,7 +108,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<OrderView> formOrderViewList(User user) throws OrderServiceException {
+    public List<OrderView> formOrderViewList(UserSec user) throws OrderServiceException {
         List<OrderView> orderViewList = new ArrayList<>();
         List<Order> orderList=null;
 
@@ -111,7 +121,7 @@ public class OrderService implements IOrderService {
 
         for(Order repoOrder : orderList){
             if(!repoOrder.getOrderstatusid().toString().equals("1c8d12cf-6b0a-4168-ae2a-cb416cf30da5")){
-                orderViewList.add(formOrderView(repoOrder.getId(),String.format("%s %s %s",user.getLastName(),user.getName(),user.getSurName())));
+                orderViewList.add(formOrderView(repoOrder.getId(),String.format("%s %s %s",user.getLastname(),user.getName(),user.getSurname())));
             }
         }
 

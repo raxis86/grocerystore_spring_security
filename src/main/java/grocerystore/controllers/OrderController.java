@@ -1,8 +1,10 @@
 package grocerystore.controllers;
 
+import grocerystore.domain.entities.UserSec;
 import grocerystore.services.abstracts.IListGroceryService;
 import grocerystore.services.abstracts.IOrderService;
 import grocerystore.services.abstracts.IUserService;
+import grocerystore.services.exceptions.FormUserException;
 import grocerystore.services.exceptions.ListGroceryServiceException;
 import grocerystore.services.exceptions.OrderServiceException;
 import grocerystore.services.exceptions.UserServiceException;
@@ -35,17 +37,16 @@ public class OrderController {
     }
 
     @ModelAttribute("user")
-    public User populateUser()
-    {
+    public UserSec populateUser() throws UserServiceException, FormUserException {
 
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-        //User user = userService.formUserFromRepo()
-        return new User();
+        UserSec user = userService.formUserFromRepo(principal.getUsername());
+        return user;
     }
 
     @RequestMapping(value = "OrderList", method = RequestMethod.GET)
-    public String list(@ModelAttribute("user") User user, Model model)
+    public String list(@ModelAttribute("user") UserSec user, Model model)
                        throws OrderServiceException {
 
 
@@ -90,7 +91,7 @@ public class OrderController {
     }
 
     @RequestMapping(value = "OrderAdd", method = RequestMethod.GET)
-    public String add(@ModelAttribute("user") User user,@ModelAttribute("cart") Cart cart, Model model){
+    public String add(@ModelAttribute("user") UserSec user,@ModelAttribute("cart") Cart cart, Model model){
         if((cart!=null)&&(user!=null)){
             model.addAttribute("user",user);
             model.addAttribute("cart",cart);
@@ -103,7 +104,7 @@ public class OrderController {
     }
 
     @RequestMapping(value = "OrderAdd", method = RequestMethod.POST)
-    public String add(@ModelAttribute("user") User user,@ModelAttribute("cart") Cart cart,
+    public String add(@ModelAttribute("user") UserSec user,@ModelAttribute("cart") Cart cart,
                       @RequestParam("name") String name, @RequestParam("lastname") String lastname,
                       @RequestParam("surname") String surname, @RequestParam("address") String address,
                       @RequestParam("phone") String phone)

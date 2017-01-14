@@ -1,5 +1,6 @@
 package grocerystore.domain.concrete;
 
+import grocerystore.domain.entities.UserSec;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +24,10 @@ import static org.junit.Assert.*;
 public class UserSqlTest {
 
     private EmbeddedDatabase db;
-    private UserSql userHandler;
+    private UserSecSql userHandler;
     private DataSource ds;
-    private User user;
-    private List<User> userList;
+    private UserSec user;
+    private List<UserSec> userList;
 
     /**
      * Подготавливаем тестовую БД H2 на основе скриптов
@@ -41,11 +42,11 @@ public class UserSqlTest {
                 .build();
 
         ds = (DataSource)db;
-        userHandler = new UserSql();
+        userHandler = new UserSecSql();
         userHandler.setDs(ds);
     }
 
-    private boolean queryAndGroceryEquals(String query, User user){
+    private boolean queryAndGroceryEquals(String query, UserSec user){
         boolean flag=false;
 
         try(Connection connection = ds.getConnection();
@@ -53,13 +54,12 @@ public class UserSqlTest {
             ResultSet resultSet = statement.executeQuery(query);) {
             while (resultSet.next()){
                 if((user.getId().equals(UUID.fromString(resultSet.getString("ID"))))
-                        &&(user.getRoleID().equals(UUID.fromString(resultSet.getString("ROLEID"))))
-                        &&(user.getName().equals(resultSet.getString("NAME")))
                         &&(user.getEmail().equals(resultSet.getString("EMAIL")))
                         &&(user.getPassword().equals(resultSet.getString("PASSWORD")))
-                        &&(user.getSalt().equals(resultSet.getString("SALT")))
-                        &&(user.getLastName().equals(resultSet.getString("LASTNAME")))
-                        &&(user.getSurName().equals(resultSet.getString("SURNAME")))
+                        &&(user.getStatus().toString().equals(resultSet.getString("STATUS")))
+                        &&(user.getName().equals(resultSet.getString("NAME")))
+                        &&(user.getLastname().equals(resultSet.getString("LASTNAME")))
+                        &&(user.getSurname().equals(resultSet.getString("SURNAME")))
                         &&(user.getAddress().equals(resultSet.getString("ADDRESS")))
                         &&(user.getPhone().equals(resultSet.getString("PHONE")))
                         ){
@@ -84,16 +84,15 @@ public class UserSqlTest {
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS_SEC");) {
             while (resultSet.next()){
                 if((userList.get(i).getId().equals(UUID.fromString(resultSet.getString("ID"))))
-                        &&(userList.get(i).getRoleID().equals(UUID.fromString(resultSet.getString("ROLEID"))))
-                        &&(userList.get(i).getName().equals(resultSet.getString("NAME")))
                         &&(userList.get(i).getEmail().equals(resultSet.getString("EMAIL")))
                         &&(userList.get(i).getPassword().equals(resultSet.getString("PASSWORD")))
-                        &&(userList.get(i).getSalt().equals(resultSet.getString("SALT")))
-                        &&(userList.get(i).getLastName().equals(resultSet.getString("LASTNAME")))
-                        &&(userList.get(i).getSurName().equals(resultSet.getString("SURNAME")))
+                        &&(userList.get(i).getStatus().toString().equals(resultSet.getString("STATUS")))
+                        &&(userList.get(i).getName().equals(resultSet.getString("NAME")))
+                        &&(userList.get(i).getLastname().equals(resultSet.getString("LASTNAME")))
+                        &&(userList.get(i).getSurname().equals(resultSet.getString("SURNAME")))
                         &&(userList.get(i).getAddress().equals(resultSet.getString("ADDRESS")))
                         &&(userList.get(i).getPhone().equals(resultSet.getString("PHONE")))
                         ){
@@ -113,7 +112,7 @@ public class UserSqlTest {
     @Test
     public void getOne() throws Exception {
         user = userHandler.getOne(UUID.fromString("839356a3-9a4a-4764-a01e-859ba979ab25"));
-        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
+        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS_SEC WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
     }
 
     /**
@@ -122,22 +121,21 @@ public class UserSqlTest {
      */
     @Test
     public void create() throws Exception {
-        user = new User();
+        user = new UserSec();
 
         user.setId(UUID.fromString("907b09fe-7e54-4b22-8fb9-4a45a449e54e"));
-        user.setRoleID(UUID.fromString("5fe1ceeb-119f-4437-8f48-6d03949a5f8b"));
-        user.setName("TestNae");
         user.setEmail("test@test.ru");
         user.setPassword("password");
-        user.setSalt("salt");
-        user.setLastName("LastName");
-        user.setSurName("Surname");
+        user.setStatus(UserSec.Status.ACTIVE);
+        user.setName("TestNae");
+        user.setLastname("LastName");
+        user.setSurname("Surname");
         user.setAddress("testAdd");
         user.setPhone("123");
 
         userHandler.create(user);
 
-        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS WHERE ID='907b09fe-7e54-4b22-8fb9-4a45a449e54e'",user));
+        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS_SEC WHERE ID='907b09fe-7e54-4b22-8fb9-4a45a449e54e'",user));
     }
 
     /**
@@ -150,13 +148,13 @@ public class UserSqlTest {
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();) {
-            statement.execute("INSERT INTO USERS VALUES ('452025dd-1f1e-4a4f-9964-78cd53dc3ee3','5fe1ceeb-119f-4437-8f48-6d03949a5f8b','name','email','pass','salt','ln','sn','add','ph')");
+            statement.execute("INSERT INTO USERS_SEC VALUES ('452025dd-1f1e-4a4f-9964-78cd53dc3ee3','email','pass','status','name','ln','sn','add','ph')");
         } catch (SQLException e) {
         }
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS WHERE ID='452025dd-1f1e-4a4f-9964-78cd53dc3ee3'");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS_SEC WHERE ID='452025dd-1f1e-4a4f-9964-78cd53dc3ee3'");) {
             if(resultSet.next())i++;
         } catch (SQLException e) {
         }
@@ -166,7 +164,7 @@ public class UserSqlTest {
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS WHERE ID='452025dd-1f1e-4a4f-9964-78cd53dc3ee3'");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS_SEC WHERE ID='452025dd-1f1e-4a4f-9964-78cd53dc3ee3'");) {
             if(resultSet.next())i--;
         } catch (SQLException e) {
         }
@@ -180,22 +178,21 @@ public class UserSqlTest {
      */
     @Test
     public void update() throws Exception {
-        user = new User();
+        user = new UserSec();
 
         user.setId(UUID.fromString("839356a3-9a4a-4764-a01e-859ba979ab25"));
-        user.setRoleID(UUID.fromString("5fe1ceeb-119f-4437-8f48-6d03949a5f8b"));
-        user.setName("TestNae");
         user.setEmail("test@test.ru");
         user.setPassword("password");
-        user.setSalt("salt");
-        user.setLastName("LastName");
-        user.setSurName("Surname");
+        user.setStatus(UserSec.Status.ACTIVE);
+        user.setName("TestNae");
+        user.setLastname("LastName");
+        user.setSurname("Surname");
         user.setAddress("testAdd");
         user.setPhone("123");
 
         userHandler.update(user);
 
-        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
+        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS_SEC WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
     }
 
     /**
@@ -204,8 +201,8 @@ public class UserSqlTest {
      */
     @Test
     public void getOne1() throws Exception {
-        user = userHandler.getOne("user@mail.ru","4D0CF81F91D55E4D666D1A6698877BE77E903A3E");
-        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
+        user = userHandler.getOne("user@mail.ru","$2a$10$noOo/7kXbsf3VClbMogKE.iq8totYmERfhKntGq6sGKpCR30zOH16");
+        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS_SEC WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
     }
 
     /**
@@ -215,7 +212,7 @@ public class UserSqlTest {
     @Test
     public void getOneByEmail() throws Exception {
         user = userHandler.getOneByEmail("user@mail.ru");
-        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
+        assertTrue(queryAndGroceryEquals("SELECT * FROM USERS_SEC WHERE ID='839356a3-9a4a-4764-a01e-859ba979ab25'",user));
     }
 
     @After

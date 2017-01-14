@@ -18,45 +18,12 @@ import java.util.Random;
  */
 public class Tool {
     private static final Logger logger = LoggerFactory.getLogger(Tool.class);
+    private static final PasswordEncoder BCRYPT = new BCryptPasswordEncoder();
 
     public static String computeHash(String password){
-        MessageDigest messageDigest=null;
-        byte[] b=null;
-        String str="";
-        try {
-            messageDigest = MessageDigest.getInstance("SHA-1");
-            messageDigest.reset();
-            messageDigest.update(password.getBytes());
-
-            b = messageDigest.digest();
-            StringBuffer sb = new StringBuffer(b.length * 2);
-            for (int i = 0; i < b.length; i++){
-                int v = b[i] & 0xff;
-                if (v < 16) {
-                    sb.append('0');
-                }
-                sb.append(Integer.toHexString(v));
-            }
-
-            str=sb.toString().toUpperCase();
-
-        } catch (NoSuchAlgorithmException e) {
-            logger.error("Cant hash generate!",e);
-            e.printStackTrace();
-        }
-
-        return str;
+        return BCRYPT.encode(password);
     }
 
-    public static String generateSalt(){
-        String salt="";
-        Random random = new Random();
-        int length = random.nextInt(17)+10;
-        for(int i=0; i<length; i++){
-            salt+=(char)(random.nextInt(93)+33);
-        }
-        return salt;
-    }
 
     public static void main(String[] args) {
 

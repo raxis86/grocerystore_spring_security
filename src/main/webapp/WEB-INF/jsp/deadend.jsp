@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: raxis
@@ -12,38 +14,41 @@
     <title>Доступ запрещен!</title>
 </head>
 <body>
-    <div class="menu">
-        <c:if test="${empty sessionScope.user}" >
-            <div> <a href="/Login">Вход</a> </div>
-            <div> <a href="/Signin">Регистрация</a> </div>
-        </c:if>
-        <c:if test="${!empty sessionScope.user}" >
-            <div> ${sessionScope.user.getName()}!</div>
-            <div> <a href="/Logout">Выход</a> </div>
-        </c:if>
-    </div>
+<div class="menu">
+    <security:authorize access="isAnonymous()">
+        <div> <a href="/Login">Вход</a> </div>
+        <div> <a href="/Signin">Регистрация</a> </div>
+    </security:authorize>
+    <security:authorize access="isAuthenticated()">
+        <div> <a href="/Logout">Выход</a> </div>
+    </security:authorize>
+</div>
 
-    <div>
-        <nav>
-            <ul id="menu">
-                <li><a href="/Index">Главная</a></li>
-                <c:if test="${empty sessionScope.user}" >
-                    <li><a href="/GroceryList">Каталог товаров</a></li>
-                </c:if>
-                <c:if test="${!empty sessionScope.user}" >
-                    <c:if test="${!sessionScope.role.getName().equals('admin')}" >
-                        <li><a href="/GroceryList">Каталог товаров</a></li>
-                        <li><a href="/CartList">Корзина покупок</a></li>
-                        <li><a href="/OrderList">Список заказов</a></li>
-                    </c:if>
-                    <c:if test="${sessionScope.role.getName().equals('admin')}" >
-                        <li><a href="/OrderListAdmin">Список заказов (админ-режим)</a></li>
-                        <li><a href="/GroceryListAdmin">Каталог товаров (админ-режим)</a></li>
-                    </c:if>
-                </c:if>
-            </ul>
-        </nav>
-    </div>
+<div>
+    <security:authorize access="isAnonymous()">
+        <div>Добро пожаловать в наш магазин!</div>
+    </security:authorize>
+    <security:authorize access="isAuthenticated()">
+        <div>Добро пожаловать в наш магазин, <sec:authentication property="principal.username" />!</div>
+    </security:authorize>
+    <nav>
+        <ul id="menu">
+            <li><a href="/Index">Главная</a></li>
+            <security:authorize access="isAnonymous()">
+                <li><a href="/GroceryList">Каталог товаров</a></li>
+            </security:authorize>
+            <sec:authorize access="hasRole('ROLE_USER')">
+                <li><a href="/GroceryList">Каталог товаров</a></li>
+                <li><a href="/CartList">Корзина покупок</a></li>
+                <li><a href="/OrderList">Список заказов</a></li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <li><a href="/OrderListAdmin">Список заказов (админ-режим)</a></li>
+                <li><a href="/GroceryListAdmin">Каталог товаров (админ-режим)</a></li>
+            </sec:authorize>
+        </ul>
+    </nav>
+</div>
 
 
     <H2>Доступ к запрашиваемому ресурсу закрыт!</H2>

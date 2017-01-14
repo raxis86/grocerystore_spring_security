@@ -1,7 +1,9 @@
 package grocerystore.services.concrete;
 
-import grocerystore.domain.abstracts.IRepositoryRole;
-import grocerystore.domain.abstracts.IRepositoryUser;
+import grocerystore.domain.abstracts.IRepositoryRoleSec;
+import grocerystore.domain.abstracts.IRepositoryUserSec;
+import grocerystore.domain.entities.RoleSec;
+import grocerystore.domain.entities.UserSec;
 import grocerystore.domain.exceptions.DAOException;
 import grocerystore.domain.exceptions.RoleException;
 import grocerystore.domain.exceptions.UserException;
@@ -16,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,15 +29,15 @@ import java.util.UUID;
 public class UserService implements IUserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private IRepositoryUser userHandler;
-    private IRepositoryRole roleHandler;
+    private IRepositoryUserSec userHandler;
+    private IRepositoryRoleSec roleHandler;
     private IValidator nameValidator;
     private IValidator addressValidator;
     private IValidator passwordValidator;
     private IValidator emailValidator;
 
-    public UserService(IRepositoryUser userHandler,
-                       IRepositoryRole roleHandler,
+    public UserService(IRepositoryUserSec userHandler,
+                       IRepositoryRoleSec roleHandler,
                        IValidator nameValidator,
                        IValidator addressValidator,
                        IValidator passwordValidator,
@@ -47,17 +51,19 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User formUser(String email, String password, String name,
-                         String lastname, String surname, String address,
-                         String phone, String roleName) throws UserServiceException, FormUserException {
+    public UserSec formUser(String email, String password, String name,
+                            String lastname, String surname, String address,
+                            String phone, String roleName) throws UserServiceException, FormUserException {
 
         Message message = new Message();
-        User user = new User();
-        User userByEmail = null;
-        Role roleByName = null;
+        UserSec user = new UserSec();
+        UserSec userByEmail = null;
+        RoleSec roleByName = null;
+        List<RoleSec> roleList = new ArrayList<>();
 
         try {
             roleByName = roleHandler.roleByRoleName(roleName);
+            roleList.add(roleByName);
             userByEmail = userHandler.getOneByEmail(email);
         } catch (UserException e) {
             logger.error("cant getOneByEmail",e);
@@ -94,15 +100,15 @@ public class UserService implements IUserService {
 
         if(message.isOk()){
             user.setId(UUID.randomUUID());
-            user.setRoleID(UUID.fromString("81446dc5-bd04-4d41-bd72-7405effb4716"));
             user.setEmail(email.toLowerCase());
-            user.setSalt(Tool.generateSalt());
-            user.setPassword(Tool.computeHash(Tool.computeHash(password) + user.getSalt()));
+            user.setPassword(Tool.computeHash(password));
+            user.setStatus(UserSec.Status.ACTIVE);
             user.setName(name);
-            user.setLastName(lastname);
-            user.setSurName(surname);
+            user.setLastname(lastname);
+            user.setSurname(surname);
             user.setPhone(phone);
             user.setAddress(address);
+            user.setRoles(roleList);
         }
         else {
             throw new FormUserException(message);
@@ -112,11 +118,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User formUserFromRepo(String email, String password) throws UserServiceException, FormUserException {
+    public UserSec formUserFromRepo(String email, String password) throws UserServiceException, FormUserException {
         //Ищем, что существует юзер с таким email
         Message message = new Message();
-        User user=null;
-        User userByEmail = null;
+        UserSec user;
+        UserSec userByEmail;
 
         try {
             userByEmail = userHandler.getOneByEmail(email);
@@ -131,7 +137,7 @@ public class UserService implements IUserService {
         }
 
         try {
-            user = userHandler.getOne(email.toLowerCase(), Tool.computeHash(Tool.computeHash(password) + userByEmail.getSalt()));
+            user = userHandler.getOne(email.toLowerCase(), Tool.computeHash(password));
         } catch (UserException e) {
             logger.error("cant getOn",e);
             throw new UserServiceException("Невозможно определить пользователя!",e);
@@ -146,7 +152,27 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUser(User user, String name, String lastname,
+    public UserSec formUserFromRepo(String email) throws UserServiceException, FormUserException {
+        Message message = new Message();
+        UserSec user;
+
+        try {
+            user = userHandler.getOneByEmail(email);
+        } catch (UserException e) {
+            logger.error("cant getOneByEmail",e);
+            throw new UserServiceException("Невозможно проверить пользователя!",e);
+        }
+
+        if(user==null){
+            message.addErrorMessage("Пользователь с таким email не найден!");
+            throw new FormUserException(message);
+        }
+
+        return user;
+    }
+
+    @Override
+    public void updateUser(UserSec user, String name, String lastname,
                            String surname, String address, String phone) throws UserServiceException {
         try {
             nameValidator.validate(name);
@@ -156,8 +182,8 @@ public class UserService implements IUserService {
             throw new UserServiceException(e.getMessage(),e);
         }
         user.setName(name);
-        user.setLastName(lastname);
-        user.setSurName(surname);
+        user.setLastname(lastname);
+        user.setSurname(surname);
         user.setAddress(address);
         user.setPhone(phone);
 
