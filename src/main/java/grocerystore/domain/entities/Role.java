@@ -9,16 +9,16 @@ import java.util.UUID;
 /**
  * Created by raxis on 13.01.2017.
  */
-public class RoleSec {
-    private static final Logger logger = LoggerFactory.getLogger(RoleSec.class);
+public class Role {
+    private static final Logger logger = LoggerFactory.getLogger(Role.class);
 
     private UUID id;            //первичный ключ
     private String roleName;    //наименование
-    private List<UserSec> users;//список пользователей
+    private List<User> users;//список пользователей
 
-    public RoleSec(){}
+    public Role(){}
 
-    public RoleSec(UUID id, String roleName, List<UserSec> users){
+    public Role(UUID id, String roleName, List<User> users){
         this.id=id;
         this.roleName=roleName;
         this.users=users;
@@ -40,11 +40,11 @@ public class RoleSec {
         this.roleName = roleName;
     }
 
-    public List<UserSec> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<UserSec> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 }

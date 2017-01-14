@@ -9,8 +9,8 @@ import java.util.UUID;
 /**
  * Created by raxis on 13.01.2017.
  */
-public class UserSec {
-    private static final Logger logger = LoggerFactory.getLogger(UserSec.class);
+public class User {
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
 
     private UUID id;            //первичный ключ
     private String email;       //email
@@ -21,17 +21,17 @@ public class UserSec {
     private String surname;     //отчество
     private String address;     //адрес
     private String phone;       //телефон
-    private List<RoleSec> roles;//список ролей
+    private List<Role> roles;//список ролей
 
     public static enum Status {
         ACTIVE, INACTIVE
     }
 
-    public UserSec() {}
+    public User() {}
 
-    public UserSec(UUID id,String email,String password,Status status,
-                   String name,String lastname,String surname,
-                   String address,String phone,List<RoleSec> roles){
+    public User(UUID id, String email, String password, Status status,
+                String name, String lastname, String surname,
+                String address, String phone, List<Role> roles){
         this.id=id;
         this.password=password;
         this.status=status;
@@ -116,11 +116,11 @@ public class UserSec {
         this.phone = phone;
     }
 
-    public List<RoleSec> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<RoleSec> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 }

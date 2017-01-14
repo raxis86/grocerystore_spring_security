@@ -11,9 +11,7 @@ import grocerystore.services.models.Cart;
 import grocerystore.services.viewmodels.OrderView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,13 +27,13 @@ public class OrderService implements IOrderService {
     private IRepositoryOrderStatus orderStatusHandler;
     private IRepositoryListGrocery listGroceryHandler;
     private IRepositoryGrocery groceryHandler;
-    private IRepositoryUserSec userHandler;
+    private IRepositoryUser userHandler;
 
     public OrderService(IRepositoryOrder orderHandler,
                         IRepositoryOrderStatus orderStatusHandler,
                         IRepositoryListGrocery listGroceryHandler,
                         IRepositoryGrocery groceryHandler,
-                        IRepositoryUserSec userHandler){
+                        IRepositoryUser userHandler){
         this.orderHandler=orderHandler;
         this.orderStatusHandler=orderStatusHandler;
         this.listGroceryHandler=listGroceryHandler;
@@ -45,7 +43,7 @@ public class OrderService implements IOrderService {
 
     @Override
     @Secured("ROLE_USER")
-    public Order createOrder(UserSec user, Cart cart) throws OrderServiceException {
+    public Order createOrder(User user, Cart cart) throws OrderServiceException {
         Order order = new Order();
         order.setId(UUID.randomUUID());
         order.setUserid(user.getId());
@@ -92,7 +90,7 @@ public class OrderService implements IOrderService {
                 try {
                     UUID userid = repoOrder.getUserid();
                     if(userid!=null){
-                        UserSec user = userHandler.getOne(userid);
+                        User user = userHandler.getOne(userid);
                         if(user!=null){
                             orderViewList.add(formOrderView(repoOrder.getId(),user.getEmail()));
                         }
@@ -108,7 +106,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<OrderView> formOrderViewList(UserSec user) throws OrderServiceException {
+    public List<OrderView> formOrderViewList(User user) throws OrderServiceException {
         List<OrderView> orderViewList = new ArrayList<>();
         List<Order> orderList=null;
 

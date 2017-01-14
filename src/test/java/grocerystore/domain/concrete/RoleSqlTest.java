@@ -1,6 +1,6 @@
 package grocerystore.domain.concrete;
 
-import grocerystore.domain.entities.RoleSec;
+import grocerystore.domain.entities.Role;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,10 +24,10 @@ import static org.junit.Assert.*;
 public class RoleSqlTest {
 
     private EmbeddedDatabase db;
-    private RoleSecSql roleHandler;
+    private RoleSql roleHandler;
     private DataSource ds;
-    private RoleSec role;
-    private List<RoleSec> roleList;
+    private Role role;
+    private List<Role> roleList;
 
     /**
      * Подготавливаем тестовую БД H2 на основе скриптов
@@ -42,11 +42,11 @@ public class RoleSqlTest {
                 .build();
 
         ds = (DataSource)db;
-        roleHandler = new RoleSecSql();
+        roleHandler = new RoleSql();
         roleHandler.setDs(ds);
     }
 
-    private boolean queryAndGroceryEquals(String query, RoleSec role){
+    private boolean queryAndGroceryEquals(String query, Role role){
         boolean flag=false;
 
         try(Connection connection = ds.getConnection();
@@ -109,7 +109,7 @@ public class RoleSqlTest {
      */
     @Test
     public void create() throws Exception {
-        role = new RoleSec();
+        role = new Role();
 
         role.setId(UUID.fromString("fe8eb585-d1f0-43b3-a9b8-5747f6b933ee"));
         role.setRoleName("Test");
@@ -159,7 +159,7 @@ public class RoleSqlTest {
      */
     @Test
     public void update() throws Exception {
-        role = new RoleSec();
+        role = new Role();
 
         role.setId(UUID.fromString("81446dc5-bd04-4d41-bd72-7405effb4716"));
         role.setRoleName("Test+");

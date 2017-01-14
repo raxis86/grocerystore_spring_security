@@ -1,7 +1,7 @@
 package grocerystore.services.models;
 
-import grocerystore.domain.entities.RoleSec;
-import grocerystore.domain.entities.UserSec;
+import grocerystore.domain.entities.Role;
+import grocerystore.domain.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,27 +12,27 @@ import org.slf4j.LoggerFactory;
 public class AuthUser {
     private static final Logger logger = LoggerFactory.getLogger(AuthUser.class);
 
-    private UserSec user;
-    private RoleSec role;
+    private User user;
+    private Role role;
 
-    public AuthUser(UserSec user, RoleSec role){
+    public AuthUser(User user, Role role){
         this.user=user;
         this.role=role;
     }
 
-    public UserSec getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserSec user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public RoleSec getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(RoleSec role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

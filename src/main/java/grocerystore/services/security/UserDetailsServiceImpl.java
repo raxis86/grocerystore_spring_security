@@ -1,8 +1,8 @@
 package grocerystore.services.security;
 
-import grocerystore.domain.abstracts.IRepositoryUserSec;
-import grocerystore.domain.entities.RoleSec;
-import grocerystore.domain.entities.UserSec;
+import grocerystore.domain.abstracts.IRepositoryUser;
+import grocerystore.domain.entities.Role;
+import grocerystore.domain.entities.User;
 import grocerystore.domain.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +24,17 @@ import java.util.Collection;
 public class UserDetailsServiceImpl implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
-    private IRepositoryUserSec userSec;
+    private IRepositoryUser user;
 
-    public UserDetailsServiceImpl(IRepositoryUserSec userSec){
-        this.userSec=userSec;
+    public UserDetailsServiceImpl(IRepositoryUser user){
+        this.user = user;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserSec user;
+        User user;
         try {
-            user = userSec.getOneByEmail(email); //our own User model class
+            user = this.user.getOneByEmail(email); //our own User model class
         } catch (UserException e) {
             logger.error("cant getOneByEmail",e);
             throw new UsernameNotFoundException("Пользователь не найден!");
@@ -44,14 +44,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             //String password = Tool.computeHash(Tool.computeHash(user.getPassword()) + user.getSalt());
             String password = user.getPassword();
             //additional information on the security object
-            boolean enabled = user.getStatus().equals(UserSec.Status.ACTIVE);
-            boolean accountNonExpired = user.getStatus().equals(UserSec.Status.ACTIVE);
-            boolean credentialsNonExpired = user.getStatus().equals(UserSec.Status.ACTIVE);
-            boolean accountNonLocked = user.getStatus().equals(UserSec.Status.ACTIVE);
+            boolean enabled = user.getStatus().equals(User.Status.ACTIVE);
+            boolean accountNonExpired = user.getStatus().equals(User.Status.ACTIVE);
+            boolean credentialsNonExpired = user.getStatus().equals(User.Status.ACTIVE);
+            boolean accountNonLocked = user.getStatus().equals(User.Status.ACTIVE);
 
             //Let's populate user roles
             Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-            for(RoleSec role : user.getRoles()){
+            for(Role role : user.getRoles()){
                 authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
 
             }

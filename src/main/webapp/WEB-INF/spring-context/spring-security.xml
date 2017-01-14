@@ -44,9 +44,9 @@
 
     <b:bean id="encoder" class="grocerystore.services.security.GrocerystorePasswordEncoder" />
     <b:bean id="userDetailsService" class="grocerystore.services.security.UserDetailsServiceImpl">
-        <b:constructor-arg name="userSec" ref="userSecSql"/>
+        <b:constructor-arg name="user" ref="userSql"/>
     </b:bean>
-    <b:bean id="userSecSql" class="grocerystore.domain.concrete.UserSecSql"/>
+    <b:bean id="userSql" class="grocerystore.domain.concrete.UserSql"/>
 
 
 </b:beans>

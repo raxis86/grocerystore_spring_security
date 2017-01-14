@@ -1,7 +1,7 @@
 package grocerystore.domain.concrete;
 
-import grocerystore.domain.abstracts.IRepositoryRoleSec;
-import grocerystore.domain.entities.RoleSec;
+import grocerystore.domain.abstracts.IRepositoryRole;
+import grocerystore.domain.entities.Role;
 import grocerystore.domain.exceptions.RoleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,17 +18,17 @@ import static grocerystore.constants.Constants.*;
  * Created by raxis on 13.01.2017.
  */
 @Repository
-public class RoleSecSql extends SQLImplementation implements IRepositoryRoleSec {
-    private static final Logger logger = LoggerFactory.getLogger(RoleSecSql.class);
+public class RoleSql extends SQLImplementation implements IRepositoryRole {
+    private static final Logger logger = LoggerFactory.getLogger(RoleSql.class);
 
     @Override
-    public List<RoleSec> getAll() throws RoleException {
-        List<RoleSec> roleList = new ArrayList<>();
+    public List<Role> getAll() throws RoleException {
+        List<Role> roleList = new ArrayList<>();
         try(Connection connection = getDs().getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet=statement.executeQuery(ROLESEC_SELECTALL_QUERY);) {
             while (resultSet.next()){
-                RoleSec role = new RoleSec();
+                Role role = new Role();
                 role.setId(UUID.fromString(resultSet.getString("ID")));
                 role.setRoleName(resultSet.getString("ROLENAME"));
                 roleList.add(role);
@@ -41,14 +41,14 @@ public class RoleSecSql extends SQLImplementation implements IRepositoryRoleSec 
     }
 
     @Override
-    public RoleSec getOne(UUID id) throws RoleException {
-        RoleSec role = null;
+    public Role getOne(UUID id) throws RoleException {
+        Role role = null;
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(ROLESEC_PREP_SELECTONE_QUERY)) {
             statement.setObject(1,id.toString());
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                role = new RoleSec();
+                role = new Role();
                 role.setId(UUID.fromString(resultSet.getString("ID")));
                 role.setRoleName(resultSet.getString("ROLENAME"));
 
@@ -62,7 +62,7 @@ public class RoleSecSql extends SQLImplementation implements IRepositoryRoleSec 
     }
 
     @Override
-    public boolean create(RoleSec entity) throws RoleException {
+    public boolean create(Role entity) throws RoleException {
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(ROLESEC_PREP_INSERT_QUERY);) {
             statement.setObject(1,entity.getId().toString());
@@ -89,7 +89,7 @@ public class RoleSecSql extends SQLImplementation implements IRepositoryRoleSec 
     }
 
     @Override
-    public boolean update(RoleSec entity) throws RoleException {
+    public boolean update(Role entity) throws RoleException {
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement=connection.prepareStatement(ROLESEC_PREP_UPDATE_QUERY);) {
             statement.setObject(1,entity.getRoleName());
@@ -103,14 +103,14 @@ public class RoleSecSql extends SQLImplementation implements IRepositoryRoleSec 
     }
 
     @Override
-    public RoleSec roleByRoleName(String roleName) throws RoleException {
-        RoleSec role = null;
+    public Role roleByRoleName(String roleName) throws RoleException {
+        Role role = null;
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(ROLESEC_PREP_SELECTONE_BY_NAME_QUERY)) {
             statement.setObject(1,roleName);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                role = new RoleSec();
+                role = new Role();
                 role.setId(UUID.fromString(resultSet.getString("ID")));
                 role.setRoleName(resultSet.getString("ROLENAME"));
 
@@ -124,23 +124,23 @@ public class RoleSecSql extends SQLImplementation implements IRepositoryRoleSec 
     }
 
     @Override
-    public List<RoleSec> getAllByUserId(UUID id) throws RoleException {
-        List<RoleSec> roleSecList = new ArrayList<>();
+    public List<Role> getAllByUserId(UUID id) throws RoleException {
+        List<Role> roleList = new ArrayList<>();
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(ROLESEC_PREP_SELECTALL_BY_USERID_QUERY)) {
             statement.setObject(1,id.toString());
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                RoleSec role = new RoleSec();
+                Role role = new Role();
                 role.setId(UUID.fromString(resultSet.getString("ID")));
                 role.setRoleName(resultSet.getString("ROLENAME"));
-                roleSecList.add(role);
+                roleList.add(role);
             }
             resultSet.close();
         } catch (SQLException e) {
             logger.error("Cant getAllByUserId(UUID id) Role!", e);
             throw new RoleException("Проблема с базой данных: невозможно получить запись из таблицы ролей!",e);
         }
-        return roleSecList;
+        return roleList;
     }
 }

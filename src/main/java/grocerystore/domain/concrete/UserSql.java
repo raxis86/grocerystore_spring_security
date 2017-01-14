@@ -1,9 +1,8 @@
 package grocerystore.domain.concrete;
 
-import grocerystore.domain.abstracts.IRepositoryUserSec;
-import grocerystore.domain.entities.RoleSec;
-import grocerystore.domain.entities.UserSec;
-import grocerystore.domain.exceptions.DAOException;
+import grocerystore.domain.abstracts.IRepositoryUser;
+import grocerystore.domain.entities.Role;
+import grocerystore.domain.entities.User;
 import grocerystore.domain.exceptions.RoleException;
 import grocerystore.domain.exceptions.UserException;
 import org.slf4j.Logger;
@@ -20,21 +19,21 @@ import static grocerystore.constants.Constants.*;
  * Created by raxis on 13.01.2017.
  */
 @Repository
-public class UserSecSql extends SQLImplementation implements IRepositoryUserSec {
-    private static final Logger logger = LoggerFactory.getLogger(UserSecSql.class);
+public class UserSql extends SQLImplementation implements IRepositoryUser {
+    private static final Logger logger = LoggerFactory.getLogger(UserSql.class);
 
-    private void fillUser(UserSec usr, ResultSet resultSet) throws SQLException, UserException {
+    private void fillUser(User usr, ResultSet resultSet) throws SQLException, UserException {
         usr.setId(UUID.fromString(resultSet.getString("ID")));
         usr.setEmail(resultSet.getString("EMAIL"));
         usr.setPassword(resultSet.getString("PASSWORD"));
-        usr.setStatus(UserSec.Status.valueOf(resultSet.getString("STATUS")));
+        usr.setStatus(User.Status.valueOf(resultSet.getString("STATUS")));
         usr.setName(resultSet.getString("NAME"));
         usr.setLastname(resultSet.getString("LASTNAME"));
         usr.setSurname(resultSet.getString("SURNAME"));
         usr.setAddress(resultSet.getString("ADDRESS"));
         usr.setPhone(resultSet.getString("PHONE"));
 
-        RoleSecSql roleSecSql = new RoleSecSql();
+        RoleSql roleSecSql = new RoleSql();
         try {
             usr.setRoles(roleSecSql.getAllByUserId(UUID.fromString(resultSet.getString("ID"))));
         } catch (RoleException e) {
@@ -44,13 +43,13 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     }
 
     @Override
-    public List<UserSec> getAll() throws UserException {
-        List<UserSec> userList = new ArrayList<>();
+    public List<User> getAll() throws UserException {
+        List<User> userList = new ArrayList<>();
         try(Connection connection = getDs().getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet=statement.executeQuery(USERSEC_SELECTALL_QUERY);) {
             while (resultSet.next()){
-                UserSec usr = new UserSec();
+                User usr = new User();
                 fillUser(usr,resultSet);
                 userList.add(usr);
             }
@@ -62,14 +61,14 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     }
 
     @Override
-    public UserSec getOne(UUID id) throws UserException {
-        UserSec usr = null;
+    public User getOne(UUID id) throws UserException {
+        User usr = null;
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(USERSEC_PREP_SELECTONE_QUERY);) {
             statement.setObject(1,id.toString());
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                usr = new UserSec();
+                usr = new User();
                 fillUser(usr,resultSet);
             }
             resultSet.close();
@@ -81,7 +80,7 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     }
 
     @Override
-    public boolean create(UserSec entity) throws UserException {
+    public boolean create(User entity) throws UserException {
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(USERSEC_PREP_INSERT_QUERY);) {
             statement.setObject(1,entity.getId().toString());
@@ -100,7 +99,7 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
         }
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(USERSANDROLES_INSERT_QUERY);) {
-            for(RoleSec role:entity.getRoles()){
+            for(Role role:entity.getRoles()){
                 statement.setObject(1,entity.getId().toString());
                 statement.setObject(2,role.getId().toString());
                 statement.execute();
@@ -115,9 +114,12 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     @Override
     public boolean delete(UUID id) throws UserException {
         try(Connection connection = getDs().getConnection();
-            PreparedStatement statement = connection.prepareStatement(USERSEC_PREP_DELETE_QUERY);) {
-            statement.setObject(1,id.toString());
-            statement.execute();
+            PreparedStatement statement1 = connection.prepareStatement(USERSEC_PREP_DELETE_QUERY);
+            PreparedStatement statement2 = connection.prepareStatement(USERSANDROLES_DELETE_BY_USERID_QUERY);) {
+            statement1.setObject(1,id.toString());
+            statement1.execute();
+            statement2.setObject(1,id.toString());
+            statement2.execute();
         } catch (SQLException e) {
             logger.error("Cant delete User!",e);
             throw new UserException("Проблема с базой данных: невозможно удалить запись из таблицы пользователей!",e);
@@ -127,7 +129,7 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     }
 
     @Override
-    public boolean update(UserSec entity) throws UserException {
+    public boolean update(User entity) throws UserException {
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement=connection.prepareStatement(USERSEC_PREP_UPDATE_QUERY);) {
             statement.setObject(1,entity.getEmail());
@@ -148,15 +150,15 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     }
 
     @Override
-    public UserSec getOne(String email, String passwordHash) throws UserException {
-        UserSec usr = null;
+    public User getOne(String email, String passwordHash) throws UserException {
+        User usr = null;
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(USERSEC_PREP_SELECTONE_BY_AUTH_QUERY)) {
             statement.setObject(1,email);
             statement.setObject(2,passwordHash);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                usr = new UserSec();
+                usr = new User();
                 fillUser(usr,resultSet);
             }
             resultSet.close();
@@ -168,14 +170,14 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     }
 
     @Override
-    public UserSec getOneByEmail(String email) throws UserException {
-        UserSec usr = null;
+    public User getOneByEmail(String email) throws UserException {
+        User usr = null;
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(USERSEC_PREP_SELECTONE_BY_EMAIL_QUERY)) {
             statement.setObject(1,email);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                usr = new UserSec();
+                usr = new User();
                 fillUser(usr,resultSet);
             }
             resultSet.close();
@@ -187,15 +189,15 @@ public class UserSecSql extends SQLImplementation implements IRepositoryUserSec 
     }
 
     @Override
-    public List<UserSec> getAllByRoleId(UUID id) throws UserException {
-        List<UserSec> userList = new ArrayList<>();
-        UserSec usr = null;
+    public List<User> getAllByRoleId(UUID id) throws UserException {
+        List<User> userList = new ArrayList<>();
+        User usr = null;
         try(Connection connection = getDs().getConnection();
             PreparedStatement statement = connection.prepareStatement(USERSEC_PREP_SELECTALL_BY_ROLEID_QUERY)) {
             statement.setObject(1,id.toString());
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                usr = new UserSec();
+                usr = new User();
                 fillUser(usr,resultSet);
                 userList.add(usr);
             }

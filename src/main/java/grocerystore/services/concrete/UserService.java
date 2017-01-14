@@ -1,9 +1,9 @@
 package grocerystore.services.concrete;
 
-import grocerystore.domain.abstracts.IRepositoryRoleSec;
-import grocerystore.domain.abstracts.IRepositoryUserSec;
-import grocerystore.domain.entities.RoleSec;
-import grocerystore.domain.entities.UserSec;
+import grocerystore.domain.abstracts.IRepositoryRole;
+import grocerystore.domain.abstracts.IRepositoryUser;
+import grocerystore.domain.entities.Role;
+import grocerystore.domain.entities.User;
 import grocerystore.domain.exceptions.DAOException;
 import grocerystore.domain.exceptions.RoleException;
 import grocerystore.domain.exceptions.UserException;
@@ -29,15 +29,15 @@ import java.util.UUID;
 public class UserService implements IUserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private IRepositoryUserSec userHandler;
-    private IRepositoryRoleSec roleHandler;
+    private IRepositoryUser userHandler;
+    private IRepositoryRole roleHandler;
     private IValidator nameValidator;
     private IValidator addressValidator;
     private IValidator passwordValidator;
     private IValidator emailValidator;
 
-    public UserService(IRepositoryUserSec userHandler,
-                       IRepositoryRoleSec roleHandler,
+    public UserService(IRepositoryUser userHandler,
+                       IRepositoryRole roleHandler,
                        IValidator nameValidator,
                        IValidator addressValidator,
                        IValidator passwordValidator,
@@ -51,15 +51,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserSec formUser(String email, String password, String name,
-                            String lastname, String surname, String address,
-                            String phone, String roleName) throws UserServiceException, FormUserException {
+    public User formUser(String email, String password, String name,
+                         String lastname, String surname, String address,
+                         String phone, String roleName) throws UserServiceException, FormUserException {
 
         Message message = new Message();
-        UserSec user = new UserSec();
-        UserSec userByEmail = null;
-        RoleSec roleByName = null;
-        List<RoleSec> roleList = new ArrayList<>();
+        User user = new User();
+        User userByEmail = null;
+        Role roleByName = null;
+        List<Role> roleList = new ArrayList<>();
 
         try {
             roleByName = roleHandler.roleByRoleName(roleName);
@@ -102,7 +102,7 @@ public class UserService implements IUserService {
             user.setId(UUID.randomUUID());
             user.setEmail(email.toLowerCase());
             user.setPassword(Tool.computeHash(password));
-            user.setStatus(UserSec.Status.ACTIVE);
+            user.setStatus(User.Status.ACTIVE);
             user.setName(name);
             user.setLastname(lastname);
             user.setSurname(surname);
@@ -118,11 +118,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserSec formUserFromRepo(String email, String password) throws UserServiceException, FormUserException {
+    public User formUserFromRepo(String email, String password) throws UserServiceException, FormUserException {
         //Ищем, что существует юзер с таким email
         Message message = new Message();
-        UserSec user;
-        UserSec userByEmail;
+        User user;
+        User userByEmail;
 
         try {
             userByEmail = userHandler.getOneByEmail(email);
@@ -152,9 +152,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserSec formUserFromRepo(String email) throws UserServiceException, FormUserException {
+    public User formUserFromRepo(String email) throws UserServiceException, FormUserException {
         Message message = new Message();
-        UserSec user;
+        User user;
 
         try {
             user = userHandler.getOneByEmail(email);
@@ -172,7 +172,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUser(UserSec user, String name, String lastname,
+    public void updateUser(User user, String name, String lastname,
                            String surname, String address, String phone) throws UserServiceException {
         try {
             nameValidator.validate(name);

@@ -1,6 +1,7 @@
 package grocerystore.domain.concrete;
 
-import grocerystore.domain.entities.UserSec;
+import grocerystore.domain.entities.User;
+import grocerystore.domain.entities.Role;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,10 +26,10 @@ import static org.junit.Assert.*;
 public class UserSqlTest {
 
     private EmbeddedDatabase db;
-    private UserSecSql userHandler;
+    private UserSql userHandler;
     private DataSource ds;
-    private UserSec user;
-    private List<UserSec> userList;
+    private User user;
+    private List<User> userList;
 
     /**
      * Подготавливаем тестовую БД H2 на основе скриптов
@@ -42,11 +44,11 @@ public class UserSqlTest {
                 .build();
 
         ds = (DataSource)db;
-        userHandler = new UserSecSql();
+        userHandler = new UserSql();
         userHandler.setDs(ds);
     }
 
-    private boolean queryAndGroceryEquals(String query, UserSec user){
+    private boolean queryAndGroceryEquals(String query, User user){
         boolean flag=false;
 
         try(Connection connection = ds.getConnection();
@@ -121,17 +123,19 @@ public class UserSqlTest {
      */
     @Test
     public void create() throws Exception {
-        user = new UserSec();
+        user = new User();
+        List<Role> roles = new ArrayList<>();
 
         user.setId(UUID.fromString("907b09fe-7e54-4b22-8fb9-4a45a449e54e"));
         user.setEmail("test@test.ru");
         user.setPassword("password");
-        user.setStatus(UserSec.Status.ACTIVE);
+        user.setStatus(User.Status.ACTIVE);
         user.setName("TestNae");
         user.setLastname("LastName");
         user.setSurname("Surname");
         user.setAddress("testAdd");
         user.setPhone("123");
+        user.setRoles(roles);
 
         userHandler.create(user);
 
@@ -148,7 +152,8 @@ public class UserSqlTest {
 
         try(Connection connection = ds.getConnection();
             Statement statement = connection.createStatement();) {
-            statement.execute("INSERT INTO USERS_SEC VALUES ('452025dd-1f1e-4a4f-9964-78cd53dc3ee3','email','pass','status','name','ln','sn','add','ph')");
+            statement.execute("INSERT INTO USERS_SEC VALUES ('452025dd-1f1e-4a4f-9964-78cd53dc3ee3','email','pass','status','name','ln','sn','add','ph');" +
+                                   "INSERT INTO usersandroles VALUES ('452025dd-1f1e-4a4f-9964-78cd53dc3ee3','2597d800-eec0-4347-84fd-324d1cb8e0bb')");
         } catch (SQLException e) {
         }
 
@@ -178,17 +183,19 @@ public class UserSqlTest {
      */
     @Test
     public void update() throws Exception {
-        user = new UserSec();
+        user = new User();
+        List<Role> roles = new ArrayList<>();
 
         user.setId(UUID.fromString("839356a3-9a4a-4764-a01e-859ba979ab25"));
         user.setEmail("test@test.ru");
         user.setPassword("password");
-        user.setStatus(UserSec.Status.ACTIVE);
+        user.setStatus(User.Status.ACTIVE);
         user.setName("TestNae");
         user.setLastname("LastName");
         user.setSurname("Surname");
         user.setAddress("testAdd");
         user.setPhone("123");
+        user.setRoles(roles);
 
         userHandler.update(user);
 
