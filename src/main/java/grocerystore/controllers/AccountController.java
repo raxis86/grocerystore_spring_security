@@ -1,8 +1,6 @@
+/*
 package grocerystore.controllers;
 
-import grocerystore.domain.exceptions.DAOException;
-import grocerystore.domain.exceptions.RoleException;
-import grocerystore.domain.exceptions.UserException;
 import grocerystore.services.abstracts.IAccountService;
 import grocerystore.services.abstracts.IUserService;
 import grocerystore.services.exceptions.AccountServiceException;
@@ -11,17 +9,16 @@ import grocerystore.services.exceptions.UserServiceException;
 import grocerystore.services.models.AuthUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.ModelAndView;
 
+*/
 /**
  * Created by raxis on 31.12.2016.
- */
+ *//*
+
 @Controller
 @SessionAttributes(value = {"user","role"})
 public class AccountController {
@@ -37,7 +34,7 @@ public class AccountController {
 
     @RequestMapping(value = "Login", method = RequestMethod.GET)
     public String login(){
-        return "login";
+        return "/WEB-INF/login.jsp";
     }
 
     @RequestMapping(value = "Login", method = RequestMethod.POST)
@@ -54,7 +51,7 @@ public class AccountController {
             return "index";
         }
         else {
-            return "login";
+            return "/WEB-INF/login.jsp";
         }
     }
 
@@ -89,3 +86,4 @@ public class AccountController {
         }
     }
 }
+*/

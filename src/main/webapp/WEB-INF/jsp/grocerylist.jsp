@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: raxis
@@ -14,34 +15,31 @@
   </head>
   <body>
   <div class="menu">
-    <c:if test="${empty sessionScope.user}" >
+    <c:if test="${empty user}" >
       <div> <a href="/Login">Вход</a> </div>
       <div> <a href="/Signin">Регистрация</a> </div>
     </c:if>
-    <c:if test="${!empty sessionScope.user}" >
+    <c:if test="${!empty user}" >
       <div> ${sessionScope.user.getName()}!</div>
       <div> <a href="/Logout">Выход</a> </div>
     </c:if>
   </div>
 
+  <sec:authentication property="principal.username" />
+
   <div>
     <nav>
       <ul id="menu">
         <li><a href="/Index">Главная</a></li>
-        <c:if test="${empty sessionScope.user}" >
           <li><a href="/GroceryList">Каталог товаров</a></li>
-        </c:if>
-        <c:if test="${!empty sessionScope.user}" >
-          <c:if test="${!sessionScope.role.getName().equals('admin')}" >
-            <li><a href="/GroceryList">Каталог товаров</a></li>
+        <sec:authorize access="hasRole('ROLE_USER')">
             <li><a href="/CartList">Корзина покупок</a></li>
             <li><a href="/OrderList">Список заказов</a></li>
-          </c:if>
-          <c:if test="${sessionScope.role.getName().equals('admin')}" >
+        </sec:authorize>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
             <li><a href="/OrderListAdmin">Список заказов (админ-режим)</a></li>
             <li><a href="/GroceryListAdmin">Каталог товаров (админ-режим)</a></li>
-          </c:if>
-        </c:if>
+        </sec:authorize>
       </ul>
     </nav>
   </div>
@@ -55,7 +53,7 @@
       <tr>
         <td>${item.getName()}</td>
         <td>${item.getPrice()}</td>
-        <c:if test="${!empty sessionScope.user}" >
+        <sec:authorize access="hasRole('ROLE_USER')">
           <td>
             <form action="/CartAdd" method="post">
               <input type="hidden" name="groceryid" value="${item.getId()}">
@@ -63,7 +61,7 @@
               <input type="submit" value="Добавить в корзину">
             </form>
           </td>
-        </c:if>
+        </sec:authorize>
       </tr>
       </br>
       </c:forEach>

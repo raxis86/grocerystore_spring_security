@@ -25,22 +25,19 @@ CREATE TABLE orderupdates (
   ID char(36) NOT NULL,
   STATUS varchar(45) NOT NULL,
   PRIMARY KEY (ID));
-CREATE TABLE roles_sec (
+CREATE TABLE roles (
   ID char(36) NOT NULL,
-  ROLENAME varchar(45) NOT NULL,
+  NAME varchar(45) NOT NULL,
   PRIMARY KEY (ID));
-CREATE TABLE users_sec (
+CREATE TABLE users (
   ID char(36) NOT NULL,
-  EMAIL varchar(45) DEFAULT NULL,
-  PASSWORD char(60) NOT NULL,
-  STATUS varchar(45) NOT NULL,
+  ROLEID char(36) NOT NULL,
   NAME varchar(100) DEFAULT NULL,
+  EMAIL varchar(100) DEFAULT NULL,
+  PASSWORD char(40) NOT NULL,
+  SALT char(40) NOT NULL,
   LASTNAME varchar(100) DEFAULT NULL,
   SURNAME varchar(100) DEFAULT NULL,
   ADDRESS varchar(100) DEFAULT NULL,
-  PHONE varchar(100) DEFAULT NULL,
+  PHONE varchar(45) DEFAULT NULL,
   PRIMARY KEY (ID));
-CREATE TABLE usersandroles (
-  USER_ID char(36) NOT NULL,
-  ROLE_ID char(36) NOT NULL,
-  PRIMARY KEY (USER_ID,ROLE_ID));

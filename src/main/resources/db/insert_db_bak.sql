@@ -56,41 +56,43 @@ INSERT INTO orderupdates
 VALUES
   ('c24be575-187f-4d41-82ee-ff874764b829',
    'принят');
-INSERT INTO roles_sec
+INSERT INTO roles
 (ID,
- ROLENAME)
+ NAME)
 VALUES
   ('2597d800-eec0-4347-84fd-324d1cb8e0bb',
-   'ROLE_ADMIN');
-INSERT INTO roles_sec
+   'admin');
+INSERT INTO roles
 (ID,
- ROLENAME)
+ NAME)
+VALUES
+  ('5fe1ceeb-119f-4437-8f48-6d03949a5f8b',
+   'customer');
+INSERT INTO roles
+(ID,
+ NAME)
 VALUES
   ('81446dc5-bd04-4d41-bd72-7405effb4716',
-   'ROLE_USER');
-INSERT INTO users_sec
+   'user');
+INSERT INTO users
 (ID,
+ ROLEID,
+ NAME,
  EMAIL,
  PASSWORD,
- STATUS,
- NAME,
+ SALT,
  LASTNAME,
  SURNAME,
  ADDRESS,
  PHONE)
 VALUES
   ('839356a3-9a4a-4764-a01e-859ba979ab25',
-   'user@mail.ru',
-   '$2a$10$noOo/7kXbsf3VClbMogKE.iq8totYmERfhKntGq6sGKpCR30zOH16',
-   'ACTIVE',
+   '5fe1ceeb-119f-4437-8f48-6d03949a5f8b',
    'Сергей',
+   'user@mail.ru',
+   '4D0CF81F91D55E4D666D1A6698877BE77E903A3E',
+   '9OqC|tWGCjH%bZ91zupc0HN>a;',
    'Иванов',
    'Викторович',
    '670024, Республика Бурятия, г.Улан-Удэ, ул.Пушкина, д.10, кв.27',
    '999999');
-INSERT INTO usersandroles
-(USER_ID,
- ROLE_ID)
-VALUES
- ('839356a3-9a4a-4764-a01e-859ba979ab25',
-  '2597d800-eec0-4347-84fd-324d1cb8e0bb');

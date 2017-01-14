@@ -1,7 +1,5 @@
 package grocerystore.controllers;
 
-import grocerystore.domain.entities.User;
-import grocerystore.domain.exceptions.DAOException;
 import grocerystore.services.abstracts.IListGroceryService;
 import grocerystore.services.abstracts.IOrderService;
 import grocerystore.services.abstracts.IUserService;
@@ -11,7 +9,8 @@ import grocerystore.services.exceptions.UserServiceException;
 import grocerystore.services.models.Cart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +34,21 @@ public class OrderController {
         this.userService=userService;
     }
 
+    @ModelAttribute("user")
+    public User populateUser()
+    {
+
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        //User user = userService.formUserFromRepo()
+        return new User();
+    }
+
     @RequestMapping(value = "OrderList", method = RequestMethod.GET)
     public String list(@ModelAttribute("user") User user, Model model)
                        throws OrderServiceException {
+
+
         if(user!=null){
             model.addAttribute("orderlist",orderService.formOrderViewList(user));
             return "orderlist";

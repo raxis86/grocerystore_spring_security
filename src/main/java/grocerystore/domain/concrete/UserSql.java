@@ -1,11 +1,9 @@
 package grocerystore.domain.concrete;
 
 import grocerystore.domain.abstracts.IRepositoryUser;
-import grocerystore.domain.entities.User;
 import grocerystore.domain.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;

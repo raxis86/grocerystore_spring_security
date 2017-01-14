@@ -2,16 +2,12 @@ package grocerystore.services.concrete;
 
 import grocerystore.domain.abstracts.IRepositoryRole;
 import grocerystore.domain.abstracts.IRepositoryUser;
-import grocerystore.domain.entities.Role;
-import grocerystore.domain.entities.User;
 import grocerystore.domain.exceptions.DAOException;
 import grocerystore.services.abstracts.IAccountService;
 import grocerystore.services.exceptions.AccountServiceException;
 import grocerystore.services.models.AuthUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**

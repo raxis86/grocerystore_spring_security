@@ -1,11 +1,9 @@
 package grocerystore.filters;
 
-import grocerystore.domain.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -14,7 +12,7 @@ import java.io.IOException;
  * Created by raxis on 25.12.2016.
  * Фильтр для проверки, что пользователь авторизован
  */
-@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {"/Cart*","/Order*"})
+//@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {"/Cart*","/Order*"})
 public class AuthorizationFilter implements Filter{
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationFilter.class);
 

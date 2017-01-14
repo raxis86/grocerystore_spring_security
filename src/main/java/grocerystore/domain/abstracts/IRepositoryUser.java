@@ -1,6 +1,5 @@
 package grocerystore.domain.abstracts;
 
-import grocerystore.domain.entities.User;
 import grocerystore.domain.exceptions.UserException;
 
 import java.util.UUID;

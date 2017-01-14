@@ -1,7 +1,5 @@
 package grocerystore.services.abstracts;
 
-import grocerystore.domain.entities.User;
-import grocerystore.domain.exceptions.DAOException;
 import grocerystore.services.exceptions.AccountServiceException;
 import grocerystore.services.models.AuthUser;
 

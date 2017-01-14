@@ -1,29 +1,39 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: raxis
-  Date: 25.12.2016
-  Time: 9:43
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
-    <title>Авторизация</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>Login page</title>
 </head>
-<ul id="menu">
-    <li><a href="/Index">Главная</a></li>
-</ul>
-<body>
-    <c:forEach items="${messages}" var="item">
-        <div>${item}</div><br>
-    </c:forEach>
-    <H2>${message}</H2>
 
-    <form action="/Login" method="post">
-        Email:<input type="text" name="email"><br>
-        Password:<input type="password" name="password"><br>
-        <input type="submit" value="Войти">
-    </form>
+<body>
+<div>
+                <c:url var="loginUrl" value="/login" />
+                <form action="${loginUrl}" method="post" class="form-horizontal">
+                    <c:if test="${param.error != null}">
+                        <div>
+                            <p>Invalid email and password.</p>
+                        </div>
+                    </c:if>
+                    <c:if test="${param.logout != null}">
+                        <div>
+                            <p>You have been logged out successfully.</p>
+                        </div>
+                    </c:if>
+                    <div>
+                        <label for="email"></label>
+                        <input type="text" id="email" name="email" placeholder="Enter Email" required>
+                    </div>
+                    <div>
+                        <label for="password"></label>
+                        <input type="password" id="password" name="password" placeholder="Enter Password" required>
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}"   value="${_csrf.token}" />
+
+                    <div>
+                        <input type="submit" value="Log in">
+                    </div>
+                </form>
+            </div>
 </body>
 </html>

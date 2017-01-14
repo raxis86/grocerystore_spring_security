@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
  * Created by raxis on 02.01.2017.
  */
 @Controller
-@SessionAttributes(value = {"user","role","cart"})
+@SessionAttributes(value = {"cart"})
 public class CartController {
     private static final Logger logger = LoggerFactory.getLogger(CartController.class);
 

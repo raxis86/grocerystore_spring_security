@@ -1,9 +1,5 @@
 package grocerystore.services.abstracts;
 
-import grocerystore.domain.entities.User;
-import grocerystore.domain.exceptions.DAOException;
-import grocerystore.domain.exceptions.RoleException;
-import grocerystore.domain.exceptions.UserException;
 import grocerystore.services.exceptions.FormUserException;
 import grocerystore.services.exceptions.UserServiceException;
 

@@ -1,7 +1,5 @@
 package grocerystore.services.models;
 
-import grocerystore.domain.entities.Role;
-import grocerystore.domain.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

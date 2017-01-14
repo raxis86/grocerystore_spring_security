@@ -1,6 +1,5 @@
 package grocerystore.domain.concrete;
 
-import grocerystore.domain.entities.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

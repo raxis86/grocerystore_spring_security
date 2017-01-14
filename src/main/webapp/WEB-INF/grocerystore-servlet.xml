@@ -12,8 +12,6 @@
 
     <context:component-scan base-package="grocerystore"/>
 
-
-
     <bean class="org.springframework.http.converter.StringHttpMessageConverter">
         <constructor-arg value="UTF-8" /></bean>
 

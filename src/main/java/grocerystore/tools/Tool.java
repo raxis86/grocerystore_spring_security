@@ -3,6 +3,8 @@ package grocerystore.tools;
 import javafx.util.converter.BigDecimalStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.security.MessageDigest;
@@ -57,6 +59,7 @@ public class Tool {
     }
 
     public static void main(String[] args) {
+
     }
 
 }
